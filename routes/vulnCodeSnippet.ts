@@ -93,7 +93,7 @@ exports.checkVulnLines = () => async (req: Request<Record<string, unknown>, Reco
   let hint
   //if (fs.existsSync('./data/static/codefixes/' + key + '.info.yml')) {
   if (fs.existsSync(path.join(basePath, key + '.info.yml'))) {
-    const codingChallengeInfos = yaml.load(fs.readFileSync('./data/static/codefixes/' + key + '.info.yml', 'utf8'))
+    const codingChallengeInfos = yaml.load(fs.readFileSync(basePath + key + '.info.yml', 'utf8'))
     if (codingChallengeInfos?.hints) {
       if (accuracy.getFindItAttempts(key) > codingChallengeInfos.hints.length) {
         if (vulnLines.length === 1) {
