@@ -27,22 +27,49 @@ global.sleep = (time: number) => {
 
 module.exports = function productReviews () {
   return (req: Request, res: Response, next: NextFunction) => {
-    const id = !utils.isChallengeEnabled(challenges.noSqlCommandChallenge) ? Number(req.params.id) : req.params.id
+    const id = !utils.isChallengeEnabled(challenges.noSqlCommandChallenge) ? Number(req.params.id) : req.params.id;
+    
+    // Medir cuánto tiempo tarda la consulta, para verificar si hubo un ataque de NoSQL DoS
+    const t0 = new Date().getTime();
+    
+    // Cambiar la consulta para evitar la concatenación de código dinámico basado en datos del usuario
+    db.reviewsCollection.find({ product: id }).then((reviews: Review[]) => { // Usamos el formato correcto sin inyectar código
 
-    // Measure how long the query takes, to check if there was a nosql dos attack
-    const t0 = new Date().getTime()
-    db.reviewsCollection.find({ $where: 'this.product == ' + id }).then((reviews: Review[]) => {
-      const t1 = new Date().getTime()
-      challengeUtils.solveIf(challenges.noSqlCommandChallenge, () => { return (t1 - t0) > 2000 })
-      const user = security.authenticatedUsers.from(req)
+      const t1 = new Date().getTime();
+      challengeUtils.solveIf(challenges.noSqlCommandChallenge, () => { return (t1 - t0) > 2000 });
+
+      const user = security.authenticatedUsers.from(req);
       for (let i = 0; i < reviews.length; i++) {
         if (user === undefined || reviews[i].likedBy.includes(user.data.email)) {
-          reviews[i].liked = true
+          reviews[i].liked = true;
         }
       }
-      res.json(utils.queryResultToJson(reviews))
+
+      res.json(utils.queryResultToJson(reviews)); // Enviar los resultados como JSON
     }, () => {
-      res.status(400).json({ error: 'Wrong Params' })
-    })
-  }
+      res.status(400).json({ error: 'Wrong Params' });
+    });
+  };
 }
+
+// module.exports = function productReviews () {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     const id = !utils.isChallengeEnabled(challenges.noSqlCommandChallenge) ? Number(req.params.id) : req.params.id
+
+//     // Measure how long the query takes, to check if there was a nosql dos attack
+//     const t0 = new Date().getTime()
+//     db.reviewsCollection.find({ $where: 'this.product == ' + id }).then((reviews: Review[]) => {
+//       const t1 = new Date().getTime()
+//       challengeUtils.solveIf(challenges.noSqlCommandChallenge, () => { return (t1 - t0) > 2000 })
+//       const user = security.authenticatedUsers.from(req)
+//       for (let i = 0; i < reviews.length; i++) {
+//         if (user === undefined || reviews[i].likedBy.includes(user.data.email)) {
+//           reviews[i].liked = true
+//         }
+//       }
+//       res.json(utils.queryResultToJson(reviews))
+//     }, () => {
+//       res.status(400).json({ error: 'Wrong Params' })
+//     })
+//   }
+// }
