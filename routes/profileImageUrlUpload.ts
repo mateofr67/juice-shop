@@ -14,24 +14,14 @@ const request = require('request')
 
 module.exports = function profileImageUrlUpload () {
   return (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.imageUrl !== undefined) {
-      const url = req.body.imageUrl
+    if (req.body.imageUrl !== undefined) { const url =new URL{req.body.imageUrl};
       if (url.match(/(.)*solve\/challenges\/server-side(.)*/) !== null) req.app.locals.abused_ssrf_bug = true
       const loggedInUser = security.authenticatedUsers.get(req.cookies.token)
       if (loggedInUser) {
+        if(url.hostname ==$'localhost') {
+        
         const imageRequest = request
-          // Primero, analizar la URL proporcionada por el usuario
-const parsedUrl = new URL(req.body.imageUrl.toString());
-
-// Asegurarse de que la URL tiene un esquema permitido (http/https)
-const allowedSchemes = ["http:", "https:"];
-if (allowedSchemes.includes(parsedUrl.protocol)) {
-  const imageRequest = request.get(req.body.imageUrl);  // Realizar la solicitud solo si es una URL segura
-} else {
-  // Manejar el caso donde la URL no es permitida
-  res.status(400).send("Invalid URL: Only HTTP and HTTPS schemes are allowed");
-}
-          //.get(url)
+          .get(url)
           .on('error', function (err: unknown) {
             UserModel.findByPk(loggedInUser.data.id).then(async (user: UserModel | null) => { return await user?.update({ profileImage: url }) }).catch((error: Error) => { next(error) })
             logger.warn(`Error retrieving user profile image: ${utils.getErrorMessage(err)}; using image link directly`)
@@ -43,7 +33,7 @@ if (allowedSchemes.includes(parsedUrl.protocol)) {
               UserModel.findByPk(loggedInUser.data.id).then(async (user: UserModel | null) => { return await user?.update({ profileImage: `/assets/public/images/uploads/${loggedInUser.data.id}.${ext}` }) }).catch((error: Error) => { next(error) })
             } else UserModel.findByPk(loggedInUser.data.id).then(async (user: UserModel | null) => { return await user?.update({ profileImage: url }) }).catch((error: Error) => { next(error) })
           })
-      } else {
+      }} else {
         next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
       }
     }
