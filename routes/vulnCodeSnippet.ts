@@ -89,12 +89,10 @@ exports.checkVulnLines = () => async (req: Request<Record<string, unknown>, Reco
   const neutralLines: number[] = snippetData.neutralLines
   const selectedLines: number[] = req.body.selectedLines
   const verdict = getVerdict(vulnLines, neutralLines, selectedLines)
-  const basePath = path.resolve('./data/static/codefixes'); // Directorio base seguro
-  const filePath = path.join(basePath, key + '.info.yml'); // Ruta segura construida con path.join
-  let hint
-
-  if (fs.existsSync(filePath)) {
-    const codingChallengeInfos = yaml.load(fs.readFileSync(filePath, 'utf8'))
+  let hint;
+ const newUrl = fs.realPath('./data/static/codefixes/') + sanitizer.sanitice(key + '.info.yml');
+  if (fs.existsSync(newUrl)) {
+    const codingChallengeInfos = yaml.load(fs.readFileSync('./data/static/codefixes/' + key + '.info.yml', 'utf8'))
     if (codingChallengeInfos?.hints) {
       if (accuracy.getFindItAttempts(key) > codingChallengeInfos.hints.length) {
         if (vulnLines.length === 1) {
