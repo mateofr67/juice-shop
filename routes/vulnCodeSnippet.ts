@@ -92,7 +92,7 @@ exports.checkVulnLines = () => async (req: Request<Record<string, unknown>, Reco
   const basePath = path.resolve('./data/static/codefixes'); // Directorio base seguro
   const filePath = path.join(basePath, key + '.info.yml'); // Ruta segura construida con path.join
   let hint
-  //if (fs.existsSync('./data/static/codefixes/' + key + '.info.yml')) {
+
   if (fs.existsSync(filePath)) {
     const codingChallengeInfos = yaml.load(fs.readFileSync(filePath, 'utf8'))
     if (codingChallengeInfos?.hints) {
