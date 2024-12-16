@@ -25,6 +25,7 @@
 > ([@kramse](https://twitter.com/kramse)) —
 > [But this doesn't have anything to do with juice.](https://twitter.com/coderPatros/status/1199268774626488320)
 > ([@coderPatros' wife](https://twitter.com/coderPatros))
+> [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mateofr67_Vulnerable-Web-Application&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mateofr67_Vulnerable-Web-Application)
 
 OWASP Juice Shop is probably the most modern and sophisticated insecure web application! It can be used in security
 trainings, awareness demos, CTFs and as a guinea pig for security tools! Juice Shop encompasses vulnerabilities from the
