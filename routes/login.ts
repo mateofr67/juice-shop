@@ -33,11 +33,12 @@ module.exports = function login () {
 
   return (req: Request, res: Response, next: NextFunction) => {
     verifyPreLoginChallenges(req) // vuln-code-snippet hide-line
-    const User = models.sequelize.define("User", 
-      { email:req.body.email },
-      { password: req.body.password },
-      { deletedAt:  },
-    });
+ const User = models.sequelize.define("User", {
+    email: req.body.email,
+    password: req.body.password,
+    deletedAt: null 
+});
+
     
     User.findOne() // vuln-code-snippet vuln-line loginAdminChallenge loginBenderChallenge loginJimChallenge
       .then((authenticatedUser) => { // vuln-code-snippet neutral-line loginAdminChallenge loginBenderChallenge loginJimChallenge
