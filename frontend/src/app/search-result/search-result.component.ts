@@ -22,6 +22,8 @@ import { faCartPlus, faEye } from '@fortawesome/free-solid-svg-icons'
 import { type Product } from '../Models/product.model'
 import { QuantityService } from '../Services/quantity.service'
 import { DeluxeGuard } from '../app.guard'
+import { SecurityContext } from '@angular/platform-browser';
+
 
 library.add(faEye, faCartPlus)
 
